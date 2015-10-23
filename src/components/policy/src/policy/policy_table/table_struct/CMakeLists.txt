@@ -37,11 +37,6 @@ set(SOURCES
   ./types.cc
   ./validation.cc
 )
-set(HEADERS
-  ./enums.h
-  ./functions.h
-  ./types.h
-)
 
-add_library(${target} ${HEADERS} ${SOURCES})
+add_library(${target} ${SOURCES})
 target_link_libraries(${target} Utils)

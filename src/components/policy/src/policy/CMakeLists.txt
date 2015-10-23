@@ -61,8 +61,7 @@ set(SOURCES
   ./src/cache_manager.cc
   ${CMAKE_SOURCE_DIR}/src/components/rpc_base/src/rpc_base/rpc_base.cc
 )
-file (GLOB HEADERS ./include/policy/*.h
-      ${CMAKE_SOURCE_DIR}/src/components/rpc_base/include/rpc_base/rpc_base.h)
+
 
 add_subdirectory(usage_statistics)
 
@@ -79,18 +78,11 @@ else ()
   list(APPEND LIBRARIES sqlite3)
 endif ()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  source_group("Header Files" FILES ${HEADERS} )        
-  source_group("Source Files" FILES ${SOURCES} )            
-endif()
-
-add_library(${target} SHARED ${SOURCES} ${HEADERS})
+add_library(${target} SHARED ${SOURCES})
 target_link_libraries(${target} ${LIBRARIES} )
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  if(ENABLE_LOG)
-    target_link_libraries(${target} log4cxx -L${LOG4CXX_LIBS_DIRECTORY})
-  endif()
+if(ENABLE_LOG)
+  target_link_libraries(${target} log4cxx -L${LOG4CXX_LIBS_DIRECTORY})
 endif()
 
 add_custom_target(copy_library_${target} ALL

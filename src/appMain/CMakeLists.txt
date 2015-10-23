@@ -91,17 +91,16 @@ if (BUILD_AVAHI_SUPPORT)
   list(APPEND LIBRARIES avahi-client avahi-common)
 endif()
 if (BUILD_USB_SUPPORT)
-  if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    list(APPEND LIBRARIES Libusb-1.0.16)
-  endif()
-endif()
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  if(ENABLE_LOG)
-    list(APPEND LIBRARIES log4cxx -L${LOG4CXX_LIBS_DIRECTORY})
-    list(APPEND LIBRARIES apr-1 -L${APR_LIBS_DIRECTORY})
-    list(APPEND LIBRARIES aprutil-1 -L${APR_UTIL_LIBS_DIRECTORY})
-    list(APPEND LIBRARIES expat -L${EXPAT_LIBS_DIRECTORY})
-  endif()
+  list(APPEND LIBRARIES Libusb-1.0.16)
+endif()
+endif()
+
+if(ENABLE_LOG)
+  list(APPEND LIBRARIES log4cxx -L${LOG4CXX_LIBS_DIRECTORY})
+  list(APPEND LIBRARIES apr-1 -L${APR_LIBS_DIRECTORY})
+  list(APPEND LIBRARIES aprutil-1 -L${APR_UTIL_LIBS_DIRECTORY})
+  list(APPEND LIBRARIES expat -L${EXPAT_LIBS_DIRECTORY})
 endif()
 
 include_directories (
@@ -144,17 +143,11 @@ set (SOURCES
   signal_handlers.cc
 )
 
-set (HEADERS 
-     btinclude.h
-     life_cycle.h
-     signal_handlers.h
-)
-
 if( NOT CMAKE_BUILD_TYPE )
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build. Options are: None, Debug, Release, RelWithDebInfo, MinSizeRel." FORCE)
 endif()
 
-add_executable(${PROJECT} ${HEADERS} ${SOURCES})
+add_executable(${PROJECT} ${SOURCES})
 target_link_libraries(${PROJECT} ${LIBRARIES})
 
 
