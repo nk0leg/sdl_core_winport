@@ -256,11 +256,11 @@ if (TIME_TESTER)
     add_definitions(-DTIME_TESTER)
 endif()
 
-# TODO(AK): check current OS here
-
-if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  add_definitions(-DWIN_NATIVE)
+else()
   add_definitions(-DOS_POSIX)
-endif()  
+endif()
 
 if (EXTENDED_MEDIA_MODE)
 add_definitions(-DEXTENDED_MEDIA_MODE)
