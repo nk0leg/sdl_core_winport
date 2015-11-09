@@ -28,6 +28,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 include_directories(include)
 
 set(SOURCES
@@ -41,3 +42,4 @@ source_group("Header Files" FILES ${HEADERS} )
 source_group("Source Files" FILES ${SOURCES} )            
 
 add_library(UsageStatistics ${SOURCES} ${HEADERS})
+endif()

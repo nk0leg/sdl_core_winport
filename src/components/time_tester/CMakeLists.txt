@@ -28,6 +28,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 set(TIME_TESTER_SRC_DIR ${COMPONENTS_DIR}/time_tester/src)
 
@@ -73,3 +74,4 @@ endif()
 
 target_link_libraries("TimeTester" ${LIBRARIES})    
 add_dependencies("TimeTester" HMI_API MOBILE_API)
+endif()

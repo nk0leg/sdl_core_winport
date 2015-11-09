@@ -291,12 +291,18 @@ class CMessageBroker_Private {
      * \brief Binary semaphore that is used to notify the
      * messaging thread that a new message is available.
      */
+#ifdef _WIN32
+	HANDLE m_messageQueueSemaphore;
+#else
     System::BinarySemaphore m_messageQueueSemaphore;
+#endif
+
 };
 
 CMessageBroker_Private::CMessageBroker_Private() :
   mControllersIdCounter(1),
   mpSender(NULL) {
+  m_messageQueueSemaphore = CreateSemaphore(NULL,1,1,0);
   mpRegistry = CMessageBrokerRegistry::getInstance();
 }
 

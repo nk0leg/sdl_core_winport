@@ -50,10 +50,11 @@ else(EXTENDED_MEDIA_MODE)
 set(default_media_inc
 )
 endif()
-
-if (TIME_TESTER)
-    set(TIME_TESTER_LIB
-        TimeTester)
+if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  if (TIME_TESTER)
+      set(TIME_TESTER_LIB
+          TimeTester)
+  endif()
 endif()
 
 set(LIBRARIES

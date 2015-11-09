@@ -347,6 +347,46 @@ bool LifeCycle::InitMessageSystem() {
 
 namespace {
   pthread_t main_thread;
+
+  BOOL CtrlHandler( DWORD fdwCtrlType ) 
+  { 
+	  BOOL ret_val = FALSE;
+	switch( fdwCtrlType ) 
+	{ 
+    // Handle the CTRL-C signal. 
+		case CTRL_C_EVENT: 
+		case CTRL_CLOSE_EVENT: 
+			LOG4CXX_DEBUG(logger_, "SIGINT signal has been caught");
+			break; 
+		default: 
+	        LOG4CXX_DEBUG(logger_, "Unexpected signal has been caught");
+		    break;
+
+  }
+
+	//Thread kill
+	return ret_val;
+} 
+
+VOID SignalHandler(int sig)
+{
+    switch(sig) {
+      case SIGINT:
+        LOG4CXX_DEBUG(logger_, "SIGINT signal has been caught");
+        break;
+      case SIGTERM:
+        LOG4CXX_DEBUG(logger_, "SIGTERM signal has been caught");
+        break;
+      case SIGSEGV:
+        LOG4CXX_DEBUG(logger_, "SIGSEGV signal has been caught");
+        break;
+      default:
+        LOG4CXX_DEBUG(logger_, "Unexpected signal has been caught");
+        break;
+    }
+	//Thread kill
+}
+
   void sig_handler(int sig) {
     switch(sig) {
       case SIGINT:
@@ -379,9 +419,9 @@ void LifeCycle::Run() {
   LOG4CXX_AUTO_TRACE(logger_);
   main_thread = pthread_self();
   // First, register signal handlers
-  if(!::utils::SubscribeToInterruptSignal(&sig_handler) ||
-     !::utils::SubscribeToTerminateSignal(&sig_handler) ||
-     !::utils::SubscribeToFaultSignal(&sig_handler)) {
+  if(!::utils::SubscribeToInterruptSignal(&SignalHandler) ||
+     !::utils::SubscribeToTerminateSignal(&SignalHandler) ||
+     !::utils::SubscribeToFaultSignal(&SignalHandler)) {
     LOG4CXX_FATAL(logger_, "Subscribe to system signals error");
   }
   // Now wait for any signal

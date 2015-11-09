@@ -32,7 +32,9 @@
 add_subdirectory(./src/policy)
 #======================= Unit-Test section =======================
 if(BUILD_TESTS)
+if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   add_subdirectory(test)
+endif()  
 endif()
 #=================================================================
 

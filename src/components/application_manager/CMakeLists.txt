@@ -35,10 +35,12 @@ endif()
 
 
 set (AM_SOURCE_DIR ${COMPONENTS_DIR}/application_manager)
-set (AM_TEST_DIR ${AM_SOURCE_DIR}/test)
-set (AM_MOCK_DIR ${AM_TEST_DIR}/mock)
+if ( NOT ${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set (AM_TEST_DIR ${AM_SOURCE_DIR}/test)
+  set (AM_MOCK_DIR ${AM_TEST_DIR}/mock)
+endif()  
 include_directories (
-    include/7
+    include/
     ${COMPONENTS_DIR}/utils/include/
     ${COMPONENTS_DIR}/formatters/include/
     ${COMPONENTS_DIR}/protocol_handler/include/
@@ -83,7 +85,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
                   v4_protocol_v1_2_no_extra
                   ProtocolLibrary
                   SmartObjects
-                  UsageStatistics
+#                  UsageStatistics                  
                   dl
                   formatters
                   dbms)

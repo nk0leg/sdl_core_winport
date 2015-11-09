@@ -29,6 +29,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifdef min
+#undef min
+#endif
 #include "protocol_handler/incoming_data_handler.h"
 #include "utils/logger.h"
 #include "protocol/common.h"

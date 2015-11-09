@@ -31,13 +31,18 @@
  */
 #ifdef __QNX__
 #  include <process.h>
-#else  // __QNX__
+#elif defined(OS_POSIX)
 #  include <sys/types.h>
 #  include <sys/wait.h>
 #  include <sys/stat.h>
 #  include <fcntl.h>
 #  include <unistd.h>
-#endif  // __QNX__
+#else
+#  include <fcntl.h>
+#  include <windows.h>
+#  include <process.h>
+#  define WEXITSTATUS(x) (x)
+#endif
 
 #include <algorithm>
 #include <functional>
@@ -109,7 +114,7 @@ bool System::Execute(bool wait) {
   return true;
 }
 
-#else  // __QNX__
+#elif defined (OS_POSIX)
 
 bool System::Execute(bool wait) {
   // Create a child process.
@@ -170,7 +175,31 @@ bool System::Execute(bool wait) {
     }
   }
 }
+#else
 
-#endif  // __QNX__
+bool System::Execute(bool wait) {
+	 size_t size = argv_.size();
+	  char * *argv = new char*[size + 1];
+  std::transform(argv_.begin(), argv_.end(), argv, GetCString());
+  argv[size] = NULL;
+
+  int mode = wait ? P_WAIT : P_NOWAIT;
+  int ret = _spawnvp(mode, command_.c_str(), argv);
+  delete[] argv;
+
+  if (ret == -1) {
+    LOG4CXX_ERROR(logger_, "Can't execute command: " << command_ 
+                          << " Errno is: " << std::strerror(errno));
+    return false;
+  }
+
+  if (wait) {
+    return WEXITSTATUS(ret) == 0;
+  }
+
+  return true;
+}
+
+#endif
 
 }  // utils

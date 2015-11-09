@@ -524,11 +524,11 @@ const std::string& Profile::audio_stream_file() const {
   return audio_stream_file_;
 }
 
-const std::uint32_t Profile::audio_data_stopped_timeout() const {
+const uint32_t Profile::audio_data_stopped_timeout() const {
   return audio_data_stopped_timeout_;
 }
 
-const std::uint32_t Profile::video_data_stopped_timeout() const {
+const uint32_t Profile::video_data_stopped_timeout() const {
   return video_data_stopped_timeout_;
 }
 

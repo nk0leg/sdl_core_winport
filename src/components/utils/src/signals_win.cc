@@ -29,33 +29,35 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <csignal>
+#include <cstdlib>
+#include <stdint.h>
 
-#ifndef SRC_COMPONENTS_UTILS_INCLUDE_UTILS_SIGNALS_H_
-#define SRC_COMPONENTS_UTILS_INCLUDE_UTILS_SIGNALS_H_
-
-#ifdef __QNXNTO__
-typedef void (*sighandler_t) (int);
-#elif defined (OS_POSIX)
-#include <signal.h>
-#else
-#include <signal.h>
-#include <windows.h>
-
-typedef BOOL (*CtrlHandler) (DWORD) ;
-typedef void (*SignalHandlerPointer)(int);
-typedef void (*SignalHandler) (int);
-#endif
+#include "utils/signals.h"
 
 namespace utils {
-#ifdef WIN_NATIVE
-bool SubscribeToInterruptSignal(SignalHandler func);
-bool SubscribeToTerminateSignal(SignalHandler func);
-bool SubscribeToFaultSignal(SignalHandler func);
-#else
-bool SubscribeToInterruptSignal(sighandler_t func func);
-bool SubscribeToTerminateSignal(sighandler_t func func);
-bool SubscribeToFaultSignal(sighandler_t func func);
-#endif
-}  //  namespace utils
 
-#endif  //  SRC_COMPONENTS_UTILS_INCLUDE_UTILS_SIGNALS_H_
+bool SubscribeToInterruptSignal(SignalHandler func) {
+//  return SetConsoleCtrlHandler( (PHANDLER_ROUTINE) func, TRUE );
+  SignalHandlerPointer previousHandler;
+  previousHandler = signal(SIGTERM, func);
+
+  return previousHandler == 0;
+
+}
+
+bool SubscribeToTerminateSignal(SignalHandler func) {
+  SignalHandlerPointer previousHandler;
+  previousHandler = signal(SIGTERM, func);
+
+  return previousHandler == 0;
+}
+
+bool SubscribeToFaultSignal(SignalHandler func) {
+  SignalHandlerPointer previousHandler;
+  previousHandler = signal(SIGTERM, func);
+
+  return previousHandler == 0;
+}
+
+}  //  namespace utils
