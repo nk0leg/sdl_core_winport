@@ -30,6 +30,9 @@
 
 #ifndef SRC_COMPONENTS_SMART_OBJECTS_INCLUDE_SMART_OBJECTS_ERRORS_H_
 #define SRC_COMPONENTS_SMART_OBJECTS_INCLUDE_SMART_OBJECTS_ERRORS_H_
+#ifdef ERROR
+#undef ERROR
+#endif
 
 namespace NsSmartDeviceLink {
 namespace NsSmartObjects {

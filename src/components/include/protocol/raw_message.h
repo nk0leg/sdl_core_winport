@@ -56,7 +56,7 @@ class RawMessage {
    */
   RawMessage(uint32_t connection_key, uint32_t protocol_version,
              const uint8_t *const data_param, uint32_t data_size,
-             uint8_t type = ServiceType::kRpc,
+             uint8_t type = protocol_handler::kRpc,
              uint32_t payload_size = 0);
   /**
    * \brief Destructor

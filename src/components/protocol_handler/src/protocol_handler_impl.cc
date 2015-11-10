@@ -33,6 +33,7 @@
 #include "protocol_handler/protocol_handler_impl.h"
 #include <memory.h>
 #include <algorithm>    // std::find
+#include <locale>
 
 #include "connection_handler/connection_handler_impl.h"
 #include "config_profile/profile.h"
@@ -633,7 +634,7 @@ RESULT_CODE ProtocolHandlerImpl::SendSingleFrameMessage(
 RESULT_CODE ProtocolHandlerImpl::SendMultiFrameMessage(
     const ConnectionID connection_id, const uint8_t session_id,
     const uint8_t protocol_version, const uint8_t service_type,
-    const size_t data_size, const uint8_t *data,
+    const  size_t data_size, const uint8_t *data,
     const size_t max_frame_size, const bool is_final_message) {
   LOG4CXX_AUTO_TRACE(logger_);
 

@@ -34,6 +34,8 @@
 
 #if defined(OS_POSIX)
 #include <sys/time.h>
+#elif defined (WIN_NATIVE)
+#include <winsock.h>
 #endif
 
 #include <stdint.h>

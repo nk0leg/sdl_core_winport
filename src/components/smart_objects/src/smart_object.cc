@@ -33,7 +33,7 @@
 #include "smart_objects/smart_object.h"
 
 #include <errno.h>
-#include <inttypes.h>
+#include <cstdint>
 #include <limits>
 #include <stdlib.h>
 #include <algorithm>
@@ -41,6 +41,11 @@
 #include <iomanip>
 #include <iterator>
 #include <limits>
+
+#ifdef min
+#undef min
+#undef max
+#endif
 
 namespace NsSmartDeviceLink {
 namespace NsSmartObjects {

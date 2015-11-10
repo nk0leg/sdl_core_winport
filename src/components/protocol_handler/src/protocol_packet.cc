@@ -41,6 +41,11 @@
 #include "utils/macro.h"
 #include "utils/byte_order.h"
 
+#ifdef min
+#undef min
+#undef max
+#endif
+
 namespace protocol_handler {
 
 CREATE_LOGGERPTR_GLOBAL(logger_, "ProtocolHandler")
@@ -96,7 +101,7 @@ void ProtocolPacket::ProtocolHeader::deserialize(
   // first 4 bits
   version = message[0] >> 4u;
   // 5th bit
-  protection_flag = message[0] & 0x08u;
+  protection_flag = static_cast<bool>(message[0] & 0x08u);
   // 6-8 bits
   frameType = message[0] & 0x07u;
 
@@ -317,7 +322,7 @@ RawMessagePtr ProtocolPacket::serializePacket() const {
   const RawMessagePtr out_message(
         new RawMessage(
           connection_id(), packet_header_.version,
-          packet, total_packet_size, packet_header_.serviceType) );
+          packet, static_cast<uint32_t>(total_packet_size), packet_header_.serviceType) );
 
   delete[] packet;
   return out_message;
@@ -379,7 +384,7 @@ RESULT_CODE ProtocolPacket::deserializePacket(
   uint32_t dataPayloadSize = 0;
   if ((offset < messageSize) &&
       packet_header_.frameType != FRAME_TYPE_FIRST) {
-    dataPayloadSize = messageSize - offset;
+    dataPayloadSize = static_cast<uint8_t>(messageSize) - offset;
   }
 
   uint8_t *data = NULL;
@@ -455,14 +460,14 @@ void ProtocolPacket::set_total_data_bytes(size_t dataBytes) {
   if (dataBytes) {
     delete[] packet_data_.data;
     packet_data_.data = new (std::nothrow) uint8_t[dataBytes];
-    packet_data_.totalDataBytes = packet_data_.data ? dataBytes : 0u;
+    packet_data_.totalDataBytes = packet_data_.data ? static_cast<uint32_t>(dataBytes) : 0u;
   }
 }
 
 void ProtocolPacket::set_data(
     const uint8_t *const new_data, const size_t new_data_size) {
   if (new_data_size && new_data) {
-    packet_header_.dataSize = packet_data_.totalDataBytes = new_data_size;
+    packet_header_.dataSize = packet_data_.totalDataBytes = static_cast<uint32_t>(new_data_size);
     delete[] packet_data_.data;
     packet_data_.data = new (std::nothrow) uint8_t[packet_data_.totalDataBytes];
     if (packet_data_.data) {

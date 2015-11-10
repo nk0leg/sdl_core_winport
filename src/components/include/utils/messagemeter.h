@@ -37,7 +37,7 @@
 #include <set>
 #include <map>
 #include "utils/date_time.h"
-
+ 
 namespace utils {
 /**
     @brief The MessageMeter class need to count message frequency
@@ -94,7 +94,7 @@ class MessageMeter {
 
 template <class Id>
 MessageMeter<Id>::MessageMeter()
-  : time_range_(TimevalStruct {0, 0}) {
+  : time_range_(0, 0) {
   time_range_.tv_sec = 1;
 }
 
@@ -147,7 +147,7 @@ template <class Id>
 void MessageMeter<Id>::set_time_range(const size_t time_range_msecs) {
   // TODO(EZamakhov): move to date_time::DateTime
   const size_t secs =
-      time_range_msecs / date_time::DateTime::MILLISECONDS_IN_SECOND;
+	  time_range_msecs / date_time::DateTime::MILLISECONDS_IN_SECOND;
   time_range_.tv_sec = secs;
   const size_t mSecs =
       time_range_msecs % date_time::DateTime::MILLISECONDS_IN_SECOND;

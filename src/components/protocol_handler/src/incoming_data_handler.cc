@@ -32,6 +32,10 @@
 #include "protocol_handler/incoming_data_handler.h"
 #include "utils/logger.h"
 #include "protocol/common.h"
+#ifdef min
+#undef min
+#undef max
+#endif
 
 namespace protocol_handler {
 

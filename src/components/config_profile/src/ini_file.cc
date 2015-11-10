@@ -42,6 +42,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #else
+#define snprintf _snprintf
 #define PATH_MAX   _MAX_PATH
 #endif
 
