@@ -101,18 +101,17 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-add_custom_command(	
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
-	COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-    ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
-    ${copy_destination}	
-	MAIN_DEPENDENCY ${target}
-)
-else()
+add_custom_target(copy_library_${target} ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/${library_name}
+    ${copy_destination}/${library_name}
+    DEPENDS ${target}
+    COMMENT "Copying library ${library_name}")
+ else()
 add_custom_target(copy_library_${target} ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
-    ${copy_destination}
+    ${copy_destination}/${library_name}
     DEPENDS ${target}
     COMMENT "Copying library ${library_name}")
 endif()
