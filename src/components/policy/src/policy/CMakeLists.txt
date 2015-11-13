@@ -29,6 +29,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 set(target Policy)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  find_package(WinSqlite3 REQUIRED)
+else()
+  find_package(Sqlite3 REQUIRED)
+endif()
+
 set(install_destination bin)
 set(copy_destination ${CMAKE_BINARY_DIR}/src/appMain)
 set(library_name ${CMAKE_SHARED_LIBRARY_PREFIX}${target}${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -64,7 +70,7 @@ set(SOURCES
 file (GLOB HEADERS ./include/policy/*.h
       ${CMAKE_SOURCE_DIR}/src/components/rpc_base/include/rpc_base/rpc_base.h)
 
-add_subdirectory(usage_statistics)
+#add_subdirectory(usage_statistics)
 
 include_directories(./policy_table/table_struct)
 add_subdirectory(policy_table/table_struct)
@@ -81,11 +87,12 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   source_group("Header Files" FILES ${HEADERS} )        
-  source_group("Source Files" FILES ${SOURCES} )            
+  source_group("Source Files" FILES ${SOURCES} )     
+  link_directories(${SQLITE_LIB_DIRECTORY}) 
 endif()
 
 add_library(${target} SHARED ${SOURCES} ${HEADERS})
-target_link_libraries(${target} ${LIBRARIES} )
+target_link_libraries(${target} ${LIBRARIES})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   if(ENABLE_LOG)
@@ -93,12 +100,22 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
 endif()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+add_custom_command(	
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+    ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
+    ${copy_destination}	
+	MAIN_DEPENDENCY ${target}
+)
+else()
 add_custom_target(copy_library_${target} ALL
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_CURRENT_BINARY_DIR}/${library_name}
     ${copy_destination}
     DEPENDS ${target}
     COMMENT "Copying library ${library_name}")
+endif()
 
 install(TARGETS ${target}
   DESTINATION ${install_destination}

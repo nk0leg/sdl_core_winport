@@ -49,6 +49,7 @@ struct VehicleData {
   const std::string vehicle_make;
   const std::string vehicle_model;
   int vehicle_year;
+  VehicleData(){}
 };
 
 enum InitResult {
