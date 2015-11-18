@@ -70,7 +70,7 @@ set(SOURCES
 file (GLOB HEADERS ./include/policy/*.h
       ${CMAKE_SOURCE_DIR}/src/components/rpc_base/include/rpc_base/rpc_base.h)
 
-#add_subdirectory(usage_statistics)
+add_subdirectory(usage_statistics)
 
 include_directories(./policy_table/table_struct)
 add_subdirectory(policy_table/table_struct)
