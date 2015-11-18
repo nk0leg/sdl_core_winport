@@ -30,6 +30,7 @@
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   find_package(WinOpenSSL REQUIRED)
+  find_package(WinSqlite3 REQUIRED)
 endif()
 
 IF (HMIADAPTER STREQUAL "messagebroker")
@@ -89,7 +90,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 if (BUILD_BT_SUPPORT)
-  list(APPEND LIBRARIES bluetooth)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND LIBRARIES bluetooth)
+  endif()     
 endif()
 if (BUILD_AVAHI_SUPPORT)
   list(APPEND LIBRARIES avahi-client avahi-common)
@@ -98,6 +101,7 @@ if (BUILD_USB_SUPPORT)
   if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     list(APPEND LIBRARIES Libusb-1.0.16)
   endif()
+   list(APPEND LIBRARIES Libusb-1.0.16)
 endif()
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   if(ENABLE_LOG)
@@ -139,8 +143,8 @@ include_directories (
   ${default_media_inc}
   ${LOG4CXX_INCLUDE_DIRECTORY}
   ${OPENSSL_INCLUDE_DIRECTORY}
-  ${CMAKE_SOURCE_DIR}/src/3rd_party/dbus-1.7.8
-  ${CMAKE_SOURCE_DIR}/src/3rd_party/dbus-1.7.8/dbus/
+#${CMAKE_SOURCE_DIR}/src/3rd_party/dbus-1.7.8
+#${CMAKE_SOURCE_DIR}/src/3rd_party/dbus-1.7.8/dbus/
 )
 
 set (SOURCES
@@ -152,6 +156,14 @@ set (HEADERS
      btinclude.h
      life_cycle.h
 )
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  list(APPEND LIBRARIES sqlite3 bthprops)
+#  message(STATUS "Additional lib path ${SQLITE_LIB_DIRECTORY} ${OPENSSL_LIB_DIRECTORY}")
+  link_directories(${SQLITE_LIB_DIRECTORY} ${OPENSSL_LIB_DIRECTORY}) 
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /INCREMENTAL:NO" )
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /FORCE:MULTIPLE" )  
+endif()  
 
 if( NOT CMAKE_BUILD_TYPE )
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build. Options are: None, Debug, Release, RelWithDebInfo, MinSizeRel." FORCE)

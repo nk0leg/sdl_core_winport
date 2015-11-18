@@ -38,8 +38,8 @@ set (HMI "web" CACHE STRING "HMI type")
 option(HMI2 "Use Qt HMI" OFF)
 option(EXTENDED_MEDIA_MODE "Turn on and off extended Madia Manager features relates to PulseAudio A2DP and GStreamer" OFF)
 option(BUILD_SHARED_LIBS "Build all libraries as shared (if ON) or static (if OFF)" OFF)
-option(BUILD_BT_SUPPORT "Bluetooth support" OFF)
-option(BUILD_USB_SUPPORT "libusb support" ON)
+option(BUILD_BT_SUPPORT "Bluetooth support" ON)
+option(BUILD_USB_SUPPORT "libusb support" OFF)
 option(BUILD_AVAHI_SUPPORT "libavahi support" OFF)
 option(BUILD_BACKTRACE_SUPPORT "backtrace support" OFF)
 option(BUILD_TESTS "Possibility to build and run tests" OFF)
@@ -47,7 +47,7 @@ option(TIME_TESTER "Enable profiling time test util" OFF)
 option(ENABLE_LOG "Logging feature" OFF)
 option(ENABLE_GCOV "gcov code coverage feature" OFF)
 option(ENABLE_SANITIZE "Sanitize tool" OFF)
-option(ENABLE_SECURITY "Security Ford protocol protection" ON)
+option(ENABLE_SECURITY "Security Ford protocol protection" OFF)
 option(ENABLE_HMI_PTU_DECRYPTION "Policy table update parsed by hmi" OFF)
 
 set(OS_TYPE_OPTION 	"$ENV{OS_TYPE}")
@@ -62,6 +62,7 @@ set(POLICY_OPTION 	"$ENV{POLICY_TYPE}")
 set(SECURITY_OPTION 	"$ENV{SECURITY_MODE}")
 set(COMPONENTS_DIR ${CMAKE_SOURCE_DIR}/src/components)
 set(SNAPSHOT_TAG 	"$ENV{SNAPSHOT_TAG}")
+set(BUILDDIR "$ENV{BUILDDIR}")
 
 project (${PROJECT})
 
@@ -182,7 +183,7 @@ if(MSVC)
   if (${QT_PORT})
   # qt specific  flags
   else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GF /GR /W0 /WX /Zc:wchar_t")# Add MSVS specific flags
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GF /GR /W0 /WX /MP /Zc:wchar_t")# Add MSVS specific flags
     # 0 (MultiThreaded) == /MT
     # 1 (MultiThreadedDebug) == /MTd
     # 2 (MultiThreadedDLL) == /MD
@@ -629,7 +630,9 @@ if(ENABLE_HMI_PTU_DECRYPTION)
   add_definitions(-DUSE_HMI_PTU_DECRYPTION)
 endif()
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 set(RTLIB rt)
+endif()
 # if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
 # set(RTLIB )
 # endif()

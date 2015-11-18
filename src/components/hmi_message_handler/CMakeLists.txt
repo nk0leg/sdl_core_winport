@@ -59,12 +59,17 @@ set (SOURCES
     ${COMPONENTS_DIR}/hmi_message_handler/src/hmi_message_adapter.cc
     ${DBUS_SOURCE}
 )
-
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")	
 set(LIBRARIES
     Utils
     ${DBUS_ADAPTER}
     ${RTLIB}
 )
+else()
+set(LIBRARIES
+    Utils
+)
+endif()	
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set (HEADERS
         ${COMPONENTS_DIR}/hmi_message_handler/include/hmi_message_handler/hmi_message_handler_impl.h

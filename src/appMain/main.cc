@@ -29,6 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <sys/stat.h>
 #include <cstdio>
 #include <cstdlib>
@@ -56,14 +57,15 @@ const std::string kLocalHostAddress = "127.0.0.1";
  * @return true if success otherwise false.
  */
 bool InitHmi() {
-  std::string hmi_link = profile::Profile::instance()->link_to_web_hmi();
+  /*std::string hmi_link = profile::Profile::instance()->link_to_web_hmi();
   struct _stat sb;
   if (_stat(hmi_link.c_str(), &sb) == -1) {
     LOG4CXX_FATAL(logger_, "HMI index file " << hmi_link << " doesn't exist!");
     return false;
   }
   return utils::System(kBrowser, kBrowserName).Add(kBrowserParams).Add(hmi_link)
-      .Execute();
+      .Execute();*/
+  return true;
 }
 #endif  // WEB_HMI
 

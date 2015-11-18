@@ -101,11 +101,14 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   endif()
   
   if (BUILD_BT_SUPPORT)
-    file (GLOB bt_src ${TM_SRC_DIR}/bluetooth/*.cc )
     file (GLOB bt_inc ${TM_INC_DIR}/bluetooth/*.h )
+    set( bt_src ${TM_SRC_DIR}/bluetooth/bluetooth_connection_factory.cc
+                ${TM_SRC_DIR}/bluetooth/bluetooth_device.cc
+                ${TM_SRC_DIR}/bluetooth/bluetooth_device_scanner_win.cc
+                ${TM_SRC_DIR}/bluetooth/bluetooth_socket_connection_win.cc
+                ${TM_SRC_DIR}/bluetooth/bluetooth_transport_adapter_win.cc)
     source_group("Header Files\\Bluetooth" FILES ${bt_inc} )    
     source_group("Source Files\\Bluetooth" FILES ${bt_src} )  
-#    add_library("TransportManager" ${bt_inc} ${bt_src} )
   endif()
 
   if (BUILD_USB_SUPPORT)
@@ -131,7 +134,6 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     source_group("Source Files\\USB" FILES ${usb_src} )    
     source_group("Header Files\\USB\\LibUSB" FILES ${usb_libinc} )    
     source_group("Source Files\\USB\\LibUSB" FILES ${usb_libsrc} )    
-#    add_library("TransportManager"  ${usb_inc} ${usb_src} ${usb_libinc} ${usb_libsrc})
   endif(BUILD_USB_SUPPORT)
    
     add_library("TransportManager" ${inc} ${src}
@@ -142,14 +144,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
                                    ${usb_libinc}  ${usb_libsrc}
     )    
 
-    target_link_libraries("TransportManager" 
-                           ProtocolLibrary ${inc} ${src} 
-                                           ${inc_tm_adpt} ${src_tm_adpt}
-                                           ${inc_tcp}  ${src_tcp}
-                                           ${bt_inc} ${bt_src} 
-                                           ${usb_inc} ${usb_src}
-                                           ${usb_libinc}  ${usb_libsrc}
-    )
+    target_link_libraries("TransportManager" ProtocolLibrary )
 else()
     if (BUILD_BT_SUPPORT)
       include_directories(
@@ -228,7 +223,9 @@ if(ENABLE_LOG)
 endif()
 
 if (BUILD_BT_SUPPORT)
+ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   target_link_libraries(${target} bluetooth)
+ endif()
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "QNX")

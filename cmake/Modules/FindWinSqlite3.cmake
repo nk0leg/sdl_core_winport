@@ -4,7 +4,7 @@
 #  SQLITE_LIB_DIRECTORY - the Sqlite3 lib directory
 if(NOT EXISTS $ENV{SQLITE_DIR}/sqlite3.lib)
   execute_process(
-      COMMAND ${CMAKE_SOURCE_DIR}/make_sqlite_lib.cmd
+      COMMAND ${CMAKE_SOURCE_DIR}/ms_tools/make_sqlite_lib.cmd
   )
 endif()
   
