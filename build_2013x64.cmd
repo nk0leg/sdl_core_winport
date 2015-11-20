@@ -11,3 +11,5 @@ SET _QT_PORT=0
 call "%~d0%~p0\common.cmd" %*
 if %errorlevel% == 2 exit /b 1
 call "%~d0%~p0\winprep.cmd"
+
+%ProgramFiles%\12.0\Bin\MSBuild.exe" /t:Rebuild /p:Configration=Release /m:4 smartDeviceLinkCore.sln
