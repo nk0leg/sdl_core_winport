@@ -43,8 +43,7 @@ const uint64_t kDeltaEpochInMicrosecs = 11644473600000000;
 namespace date_time {
 
 TimevalStruct DateTime::getCurrentTime() {
-  qint64 tmpres = 0;
-  QDateTime tmpres = DateTime::currentMSecsSinceEpoch();
+  qint64 tmpres = QDateTime::currentMSecsSinceEpoch();
   TimevalStruct tv;
 
   tmpres -= kDeltaEpochInMicrosecs;
