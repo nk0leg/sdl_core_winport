@@ -222,12 +222,12 @@ inline utils::SharedPtr<ObjectType>::SharedPtr(ObjectType* Object)
 
 template <typename ObjectType>
 inline utils::SharedPtr<ObjectType>::SharedPtr()
-    : mObject(0), mReferenceCounter(0) {}
+    : mObject(NULL), mReferenceCounter(NULL) {}
 
 template <typename ObjectType>
 inline utils::SharedPtr<ObjectType>::SharedPtr(
     const SharedPtr<ObjectType>& Other)
-    : mObject(0), mReferenceCounter(0) {
+    : mObject(NULL), mReferenceCounter(NULL) {
   *this = Other;
 }
 
@@ -235,13 +235,17 @@ template <typename ObjectType>
 template <typename OtherObjectType>
 inline utils::SharedPtr<ObjectType>::SharedPtr(
     const SharedPtr<OtherObjectType>& Other)
-    : mObject(0), mReferenceCounter(0) {
+    : mObject(NULL), mReferenceCounter(NULL) {
   *this = Other;
 }
 
 template <typename ObjectType>
 inline utils::SharedPtr<ObjectType>::~SharedPtr() {
   dropReference();
+  if (!mReferenceCounter->deref()) {
+    delete mReferenceCounter;
+    mReferenceCounter = NULL;
+  }
 }
 
 template <typename ObjectType>
@@ -271,9 +275,9 @@ inline utils::SharedPtr<ObjectType>& utils::SharedPtr<ObjectType>::operator=(
   mObject = Other.mObject;
   mReferenceCounter = Other.mReferenceCounter;
 
-  if (0 != mReferenceCounter) {
+  if (mReferenceCounter) {
 #ifdef QT_PORT
-    mReferenceCounter->ref();
+    mReferenceCounter++;
 #else
     atomic_post_inc(mReferenceCounter);
 #endif
@@ -290,9 +294,9 @@ utils::SharedPtr<OtherObjectType> utils::SharedPtr<
   casted_pointer.mObject = static_cast<OtherObjectType*>(pointer.mObject);
   casted_pointer.mReferenceCounter = pointer.mReferenceCounter;
 
-  if (0 != casted_pointer.mReferenceCounter) {
+  if (casted_pointer.mReferenceCounter) {
 #ifdef QT_PORT
-    casted_pointer.mReferenceCounter->ref();
+    casted_pointer.mReferenceCounter++;
 #else
     atomic_post_inc(casted_pointer.mReferenceCounter);
 #endif
@@ -307,11 +311,11 @@ utils::SharedPtr<OtherObjectType> utils::SharedPtr<
     ObjectType>::dynamic_pointer_cast(const SharedPtr<ObjectType>& pointer) {
   SharedPtr<OtherObjectType> casted_pointer;
   casted_pointer.mObject = dynamic_cast<OtherObjectType*>(pointer.mObject);
-  if (NULL != casted_pointer.mObject) {
+  if (casted_pointer.mObject) {
     casted_pointer.mReferenceCounter = pointer.mReferenceCounter;
-    if (0 != casted_pointer.mReferenceCounter) {
+    if (casted_pointer.mReferenceCounter) {
 #ifdef QT_PORT
-      casted_pointer.mReferenceCounter->deref();
+      casted_pointer.mReferenceCounter--;
 #else
       atomic_post_inc(casted_pointer.mReferenceCounter);
 #endif
@@ -339,7 +343,7 @@ utils::SharedPtr<ObjectType>::operator bool() const {
 
 template <typename ObjectType>
 void utils::SharedPtr<ObjectType>::reset() {
-  reset_impl(0);
+  reset_impl(NULL);
 }
 
 template <typename ObjectType>
@@ -350,10 +354,11 @@ void utils::SharedPtr<ObjectType>::reset(ObjectType* other) {
 
 template <typename ObjectType>
 void SharedPtr<ObjectType>::release() {
-  delete mObject;
-  mObject = 0;
-  delete mReferenceCounter;
-  mReferenceCounter = 0;
+  if (mObject) {
+    delete mObject;
+    mObject = NULL;
+  }
+  mReferenceCounter = NULL;
 }
 
 template <typename ObjectType>
@@ -369,7 +374,7 @@ void utils::SharedPtr<ObjectType>::reset_impl(ObjectType* other) {
 
 template <typename ObjectType>
 inline void SharedPtr<ObjectType>::dropReference() {
-  if (0 != mReferenceCounter) {
+  if (mReferenceCounter) {
 #ifdef QT_PORT
     if (1 == *(mReferenceCounter--)) {
 #else
@@ -387,7 +392,7 @@ ObjectType* SharedPtr<ObjectType>::get() const {
 
 template <typename ObjectType>
 inline bool SharedPtr<ObjectType>::valid() const {
-  if (mReferenceCounter && (0 < *mReferenceCounter)) {
+  if (mReferenceCounter && (NULL < *mReferenceCounter)) {
     return (mObject != NULL);
   }
   return false;
