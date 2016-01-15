@@ -133,10 +133,6 @@ class Thread {
    */
   bool start(const ThreadOptions& options);
 
-#if defined(OS_WINDOWS)
-  void cleanup();
-#endif
-
   sync_primitives::Lock& delegate_lock() {
     return delegate_lock_;
   }

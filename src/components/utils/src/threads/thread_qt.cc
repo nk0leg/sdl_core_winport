@@ -30,14 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <errno.h>
-#include <limits.h>
-#include <stddef.h>
-#include <signal.h>
-
 #include "utils/threads/thread.h"
-#include "qthread.h"
-#include "utils/atomic.h"
 #include "utils/threads/thread_delegate.h"
 #include "utils/logger.h"
 
@@ -51,11 +44,11 @@ void sleep(uint32_t ms) {
   QThread::msleep(ms);
 }
 
-size_t Thread::kMinStackSize = 0; /* Ubuntu : 16384 ; QNX : 256; */
+size_t Thread::kMinStackSize = 0;
 
 void Thread::cleanup(void* arg) {
   LOG4CXX_AUTO_TRACE(logger_);
-  Thread* thread = reinterpret_cast<Thread*>(arg);
+  Thread* thread = static_cast<Thread*>(arg);
   sync_primitives::AutoLock auto_lock(thread->state_lock_);
   thread->isThreadRunning_ = false;
   thread->state_cond_.Broadcast();
@@ -66,7 +59,7 @@ void* Thread::threadFunc(void* arg) {
                 "Thread #" << QThread::currentThread()
                            << " started successfully");
 
-  threads::Thread* thread = reinterpret_cast<Thread*>(arg);
+  threads::Thread* thread = static_cast<Thread*>(arg);
   DCHECK(thread);
 
   thread->state_lock_.Acquire();
@@ -123,11 +116,6 @@ bool Thread::start() {
   return true;
 }
 
-void Thread::cleanup() {
-  sync_primitives::AutoLock auto_lock(state_lock_);
-  cleanup(this);
-}
-
 PlatformThreadHandle Thread::CurrentId() {
   return QThread::currentThread();
 }
@@ -175,17 +163,22 @@ bool Thread::start(const ThreadOptions& options) {
 
 void Thread::stop() {
   LOG4CXX_AUTO_TRACE(logger_);
-  sync_primitives::AutoLock auto_lock(state_lock_);
+  {
+    sync_primitives::AutoLock auto_lock(state_lock_);
 
-  stopped_ = true;
+    stopped_ = true;
 
-  LOG4CXX_DEBUG(logger_,
-                "Stopping thread #" << handle_ << " \"" << name_ << " \"");
+    LOG4CXX_DEBUG(logger_,
+                  "Stopping thread #" << handle_ << " \"" << name_ << " \"");
 
-  if (delegate_ && isThreadRunning_) {
-    delegate_->exitThreadMain();
+    if (delegate_ && isThreadRunning_) {
+      delegate_->exitThreadMain();
+    }
+
+    LOG4CXX_DEBUG(logger_,
+                  "Stopped thread #" << handle_ << " \"" << name_ << " \"");
   }
-
+  cleanup(static_cast<void*>(this));
   LOG4CXX_DEBUG(logger_,
                 "Stopped thread #" << handle_ << " \"" << name_ << " \"");
 }

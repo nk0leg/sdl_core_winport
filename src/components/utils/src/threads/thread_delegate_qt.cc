@@ -31,8 +31,6 @@
  */
 #include "utils/threads/thread_delegate.h"
 
-#include <QtCore>
-
 #include "utils/threads/thread.h"
 #include "utils/lock.h"
 
@@ -46,7 +44,6 @@ ThreadDelegate::~ThreadDelegate() {
 
 void ThreadDelegate::exitThreadMain() {
   if (thread_) {
-    thread_->cleanup();
     emit close_thread();
   }
 }
