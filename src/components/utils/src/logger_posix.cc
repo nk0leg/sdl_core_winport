@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2016, Ford Motor Company
  * All rights reserved.
  *
@@ -32,6 +32,7 @@
 #include "utils/logger.h"
 #include "utils/log_message_loop_thread.h"
 #include "utils/pimpl_impl.h"
+#include <apr_time.h>
 
 #if defined(LOG4CXX_LOGGER)
 #include <log4cxx/logger.h>
@@ -69,7 +70,7 @@ class logger::Logger::Impl {
  private:
   bool logs_enabled_;
   LogLevel::Type log_level_;
-  LogMessageLoopThread* message_loop_thread_;
+  logger::LogMessageLoopThread* message_loop_thread_;
 };
 
 logger::Logger::Impl::Impl()
@@ -86,7 +87,7 @@ bool logger::Logger::Impl::InitLogger(const bool logs_enabled,
   }
   set_logs_enabled(logs_enabled);
   log4cxx::PropertyConfigurator::configure(ini_file_name);
-  message_loop_thread = new LogMessageLoopThread();
+  message_loop_thread_ = new LogMessageLoopThread();
   return true;
 }
 
