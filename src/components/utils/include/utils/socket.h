@@ -34,6 +34,7 @@
 
 #include <cstdint>
 #include <string>
+#include <arpa/inet.h>
 
 #include "utils/host_address.h"
 #include "utils/pimpl.h"

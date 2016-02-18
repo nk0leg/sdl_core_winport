@@ -85,8 +85,8 @@ file_system::FileSizeType file_system::DirectorySize(
     return_code = readdir_r(directory, dir_element, &result);
     for (; NULL != result && 0 == return_code;
          return_code = readdir_r(directory, dir_element, &result)) {
-      if (kCurrentDirectoryEntry == result->d_name) ||
-          kParentDirectoryEntry == result->d_name)) {
+      if ((kCurrentDirectoryEntry == result->d_name) ||
+          (kParentDirectoryEntry == result->d_name)) {
           continue;
         }
       std::string full_element_path = ConcatPath(utf8_path, result->d_name);
@@ -226,8 +226,8 @@ void file_system::RemoveDirectoryContent(const std::string& utf8_path) {
 
     for (; NULL != result && 0 == return_code;
          return_code = readdir_r(directory, dir_element, &result)) {
-      if (kCurrentDirectoryEntry == result->d_name) ||
-          kParentDirectoryEntry == result->d_name)) {
+      if ((kCurrentDirectoryEntry == result->d_name) ||
+          (kParentDirectoryEntry == result->d_name)) {
           continue;
         }
 
