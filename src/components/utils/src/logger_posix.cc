@@ -35,7 +35,8 @@
 
 #if defined(LOG4CXX_LOGGER)
 #include <log4cxx/logger.h>
-#include <log4cxx/OQ>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/spi/loggingevent.h>
 
 logger::Logger::Pimpl logger::Logger::impl_;
 
