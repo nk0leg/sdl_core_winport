@@ -86,8 +86,6 @@ class TcpSocketConnection {
 
   bool Connect(const HostAddress& address, const uint16_t port);
 
-  bool Connect(const int descriptor);
-
   bool Notify();
 
   void Wait();
